@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "CT_URL=http://mymachine:9000 LOCAL_URL=http://mymachine:5000 API_VERSION=v1 NODE_PATH=app/src PORT=3005 node --harmony ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js",
+    "dev": "CT_URL=http://mymachine:9000 LOCAL_URL=http://mymachine:5000 API_VERSION=v1 NODE_PATH=app/src PORT=5000 node --harmony ./node_modules/.bin/grunt --gruntfile app/Gruntfile.js",
     "start": "NODE_PATH=app/src node app/index"
   },
   "keywords": [],
@@ -49,6 +49,6 @@
     "koa-router": "^7.0.1",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
-    "sql2json": "1.4.9"
+    "sql2json": "1.4.10"
   }
 }
