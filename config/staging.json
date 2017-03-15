@@ -1,0 +1,8 @@
+{
+    "logger": {
+        "name": "query",
+        "level": "debug",
+        "toFile": false,
+        "dirLogFile": null
+    }
+}
