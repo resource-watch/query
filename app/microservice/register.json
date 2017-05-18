@@ -29,5 +29,12 @@
 			"method": "POST",
 			"path": "/api/v1/download"
 		}
+	},{
+		"path": "/v1/jiminy",
+		"method": "GET",
+		"redirect": {
+			"method": "GET",
+			"path": "/api/v1/jiminy"
+		}
 	}]
 }

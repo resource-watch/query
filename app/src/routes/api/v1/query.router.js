@@ -1,11 +1,15 @@
 const Router = require('koa-router');
 const logger = require('logger');
 const request = require('request');
+const requestPromise = require('request-promise');
 const QueryService = require('services/query.service');
 const passThrough = require('stream').PassThrough;
-
+const Jiminy = require('jiminy');
 
 const router = new Router();
+
+const jiminyConfig = require('./jiminy.config');
+const charts = ['bar', 'line', 'pie', 'scatter', '1d_scatter', '1d_tick'];
 
 function getHeadersFromResponse(response) {
     const validHeaders = {};
@@ -33,10 +37,44 @@ class QueryRouter {
 
     }
 
+    static async jiminy(ctx) {
+        logger.info('Doing jiminy');
+        try {
+
+            const options = await QueryService.getTargetQuery(ctx);
+            const fields = QueryService.getFieldsOfSql(ctx);
+            options.simple = true;
+            options.resolveWithFullResponse = false;
+            const body = await requestPromise(options);
+
+            const jiminy = new Jiminy(body.data, jiminyConfig);
+            const response = {};
+
+            response.general = jiminy.recommendation();
+            response.byColumns = {};
+            for (let i = 0, length = fields.length; i < length; i++) {
+                const column = fields[i].alias || fields[i].value;
+                response.byColumns[column] = jiminy.recommendation([column]);
+            }
+            response.byType = {};
+            for (let i = 0, length = charts.length; i < length; i++) {
+                response.byType[charts[i]] = jiminy.columns(charts[i]);
+            }
+            ctx.body = {
+                data: response
+            };
+
+        } catch (err) {
+            logger.error(err);
+        }
+
+    }
+
 }
 
 router.post('/query', QueryRouter.query);
 router.post('/download', QueryRouter.query);
+router.get('/jiminy', QueryRouter.jiminy);
 
 
 module.exports = router;

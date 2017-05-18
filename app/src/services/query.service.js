@@ -86,7 +86,7 @@ class QueryService {
     }
 
     static isFunction(parsed) {
-        logger.debug('Checking if it is a function',parsed);
+        logger.debug('Checking if it is a function', parsed);
 
         if (!parsed.select || parsed.select.length !== 1 || parsed.select[0].type !== 'function') {
             throw new ValidationError(400, 'Invalid query. Function not found or not supported');
@@ -210,7 +210,7 @@ class QueryService {
         }
         logger.debug('ctx', ctx.path);
         const options = {
-            uri: `${process.env.CT_URL}/${process.env.API_VERSION}${ctx.path}/${dataset.id}`,
+            uri: `${process.env.CT_URL}/${process.env.API_VERSION}${ctx.path !== '/jiminy' ? ctx.path : '/query'}/${dataset.id}`,
             simple: false,
             resolveWithFullResponse: true,
             json: true
@@ -246,6 +246,16 @@ class QueryService {
         }
 
         return await QueryService.isQuery(tableName, parsed, sql, ctx);
+    }
+
+    static getFieldsOfSql(ctx) {
+        logger.debug('Obtaining fields');
+        const sql = ctx.query.sql || ctx.request.body.sql;
+        if (sql) {
+            const parsed = new Sql2json(sql).toJSON();
+            return parsed.select;
+        }
+        return null;
     }
 
 }
