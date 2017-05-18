@@ -62,8 +62,8 @@ class QueryRouter {
                     general: jiminy.columns(charts[i]),
                     columns: {}
                 };
-                for (let i = 0, lengthColumns = fields.length; i < lengthColumns; i++) {
-                    const column = fields[i].alias || fields[i].value;
+                for (let j = 0, lengthColumns = fields.length; j < lengthColumns; j++) {
+                    const column = fields[j].alias || fields[j].value;
                     response.byType[charts[i]].columns[column] = jiminy.columns(charts[i], column);
                 }
 
