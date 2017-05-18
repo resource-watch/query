@@ -1,5 +1,5 @@
 prod:
-  image: vizzuality/query:1.0.0${STAGING}
+  image: vizzuality/query:1.1.0${STAGING}
   ports:
     - "5000"
   env_file:
