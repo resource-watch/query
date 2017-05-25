@@ -192,7 +192,9 @@ class QueryService {
                     sql: newSql
                 });
             } else {
-                body = Object.assign({}, ctx.query, ctx.request.body, {
+                qs = Object.assign({}, ctx.query);
+                delete qs.sql;
+                body = Object.assign({}, ctx.request.body, {
                     sql: newSql
                 });
             }
@@ -203,7 +205,8 @@ class QueryService {
                     tableName: newTableName
                 });
             } else {
-                body = Object.assign({}, ctx.query, ctx.request.body, {
+                qs = Object.assign({}, ctx.query);
+                body = Object.assign({}, ctx.request.body, {
                     tableName: newTableName
                 });
             }
@@ -220,7 +223,9 @@ class QueryService {
             options.qs = qs;
             options.method = 'GET';
         } else {
+            delete qs.loggedUser;
             delete body.loggedUser;
+            options.qs = qs;
             options.body = body;
             options.method = 'POST';
         }
