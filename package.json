@@ -50,6 +50,6 @@
     "koa-router": "^7.0.1",
     "request": "^2.79.0",
     "request-promise": "^4.1.1",
-    "sql2json": "1.5.6"
+    "sql2json": "1.5.8"
   }
 }
