@@ -9,6 +9,11 @@ develop:
     LOCAL_URL: http://mymachine:5000
     API_VERSION: v1
     CT_TOKEN: null
+    CT_REGISTER_MODE: auto
+    GCLOUD_STORAGE: ${GCLOUD_STORAGE}
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/query/storage.json
+    BUCKET_FREEZE: query-freeze
+    
   command: develop
   volumes:
     - ./app:/opt/query/app

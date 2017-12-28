@@ -1,10 +1,13 @@
 const Router = require('koa-router');
 const logger = require('logger');
+const fs = require('fs-promise');
 const request = require('request');
 const requestPromise = require('request-promise');
+const Storage = require('@google-cloud/storage');
 const QueryService = require('services/query.service');
 const passThrough = require('stream').PassThrough;
 const Jiminy = require('jiminy');
+
 
 const router = new Router();
 
@@ -23,18 +26,67 @@ function getHeadersFromResponse(response) {
 
 class QueryRouter {
 
+    static async freeze(options) {
+        const nameFile = `${Date.now()}.json`;
+        try {
+            logger.debug('Obtaining data');
+            const data = await requestPromise(options);
+            await fs.writeFile(`/tmp/${nameFile}`, JSON.stringify(data.body));
+            const storage = new Storage();
+            // uploading
+            logger.debug('uploading file');
+            await storage.bucket(process.env.BUCKET_FREEZE).upload(`/tmp/${nameFile}`);
+            logger.debug('making public');
+            await storage.bucket(process.env.BUCKET_FREEZE).file(nameFile).makePublic();
+            return `https://storage.googleapis.com/${process.env.BUCKET_FREEZE}/${nameFile}`;
+        } catch (err) {
+            logger.error(err);
+            throw err;
+        } finally {
+            try {
+                const exists = await fs.stat(`/tmp/${nameFile}`);
+                if (exists) {
+                    await fs.unlink(`/tmp/${nameFile}`);
+                }
+            } catch (err) {}
+        }
+    }
+
     static async query(ctx) {
         logger.info('Doing query');
+        
         const options = await QueryService.getTargetQuery(ctx);
         logger.debug('Doing request to adapter', options);
-
-        const req = request(options);
-        req.on('response', (response) => {
-            ctx.response.status = response.statusCode;
-            ctx.set(getHeadersFromResponse(response));
-        });
-        ctx.body = req.on('error', ctx.onerror).pipe(passThrough());
-
+        if (!ctx.query.freeze || ctx.query.freeze !== 'true') {
+            const req = request(options);
+            req.on('response', (response) => {
+                ctx.response.status = response.statusCode;
+                ctx.set(getHeadersFromResponse(response));
+            });
+            ctx.body = req.on('error', ctx.onerror).pipe(passThrough());
+        } else {
+            let loggedUser = ctx.request.body.loggedUser;
+            if (!loggedUser && ctx.query.loggedUser) {
+                loggedUser = JSON.parse(ctx.query.loggedUser);
+            }
+            if (!loggedUser) {
+                ctx.throw(401, 'Not authenticated');
+                return;
+            }
+            try {
+                const url = await QueryRouter.freeze(options);
+                ctx.body = {
+                    url
+                };
+            } catch(err) {
+                if (err.statusCode) {
+                    ctx.throw(err.statusCode, err.details);
+                    return;
+                }
+                ctx.throw(500, 'Internal server error');
+                return;
+            }
+        }
     }
 
     static async jiminy(ctx) {
