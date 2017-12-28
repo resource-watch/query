@@ -31,20 +31,13 @@ class QueryRouter {
         try {
             logger.debug('Obtaining data');
             const data = await requestPromise(options);
-            await fs.writeFile(`/tmp/${nameFile}`, JSON.stringify(data));
-            
+            await fs.writeFile(`/tmp/${nameFile}`, JSON.stringify(data.body));
             const storage = new Storage();
             // uploading
             logger.debug('uploading file');
-            await storage
-            .bucket(process.env.BUCKET_FREEZE)
-            .upload(`/tmp/${nameFile}`);
+            await storage.bucket(process.env.BUCKET_FREEZE).upload(`/tmp/${nameFile}`);
             logger.debug('making public');
-            const file = await storage
-            .bucket(process.env.BUCKET_FREEZE)
-            .file(nameFile)
-            .makePublic();
-            logger.debug('file', file);
+            await storage.bucket(process.env.BUCKET_FREEZE).file(nameFile).makePublic();
             return `https://storage.googleapis.com/${process.env.BUCKET_FREEZE}/${nameFile}`;
         } catch (err) {
             logger.error(err);
