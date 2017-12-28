@@ -32,6 +32,10 @@ spec:
             value: app/src
           - name: LOCAL_URL
             value: http://{name}.default.svc.cluster.local:5000
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /opt/query/storage.json
+          - name: BUCKET_FREEZE
+            value: query-freeze
           - name: CT_URL
             valueFrom:
                 secretKeyRef:
@@ -52,6 +56,11 @@ spec:
                 secretKeyRef:
                   name: mssecrets
                   key: API_VERSION
+          - name: GCLOUD_STORAGE
+            valueFrom:
+                secretKeyRef:
+                  name: mssecrets
+                  key: GCLOUD_BACKUPS_CREDENTIALS
         ports:
           - containerPort: 5000
 
