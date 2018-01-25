@@ -12,7 +12,9 @@ module.exports = [{
     name: 'line',
     acceptedStatTypes: [
         ['quantitative', 'temporal'],
-        ['quantitative', 'ordinal']
+        ['quantitative', 'ordinal'],
+        ['quantitative', 'quantitative'],
+        ['ordinal', 'ordinal']
     ]
 },
 {
