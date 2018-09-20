@@ -1,11 +1,12 @@
 {
-     "logger": {
-        "name": "query-DEV",
-        "level": "debug",
-        "toFile": false,
-        "dirLogFile": null
-    },
-    "service": {
-        "name": "Query",
-        "port": 50050    }
+  "logger": {
+    "name": "query-DEV",
+    "level": "debug",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "service": {
+    "name": "Query",
+    "port": 50050
+  }
 }

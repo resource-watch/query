@@ -7,17 +7,15 @@ const Storage = require('@google-cloud/storage');
 const QueryService = require('services/query.service');
 const passThrough = require('stream').PassThrough;
 const Jiminy = require('jiminy');
-
+const jiminyConfig = require('./jiminy.config');
 
 const router = new Router();
-
-const jiminyConfig = require('./jiminy.config');
 const charts = ['bar', 'line', 'pie', 'scatter', '1d_scatter', '1d_tick'];
 
 function getHeadersFromResponse(response) {
     const validHeaders = {};
     const keys = Object.keys(response.headers);
-    for (let i = 0, length = keys.length; i < length; i++) {
+    for (let i = 0, { length } = keys; i < length; i++) {
         validHeaders[keys[i]] = response.headers[keys[i]];
     }
     logger.debug('Valid-headers', validHeaders);
@@ -32,18 +30,18 @@ class QueryRouter {
             logger.debug('Obtaining data');
             const data = await requestPromise(options);
             await fs.writeFile(`/tmp/${nameFile}`, JSON.stringify(data));
-            
+
             const storage = new Storage();
             // uploading
             logger.debug('uploading file');
             await storage
-            .bucket(process.env.BUCKET_FREEZE)
-            .upload(`/tmp/${nameFile}`);
+                .bucket(process.env.BUCKET_FREEZE)
+                .upload(`/tmp/${nameFile}`);
             logger.debug('making public');
             const file = await storage
-            .bucket(process.env.BUCKET_FREEZE)
-            .file(nameFile)
-            .makePublic();
+                .bucket(process.env.BUCKET_FREEZE)
+                .file(nameFile)
+                .makePublic();
             logger.debug('file', file);
             return `https://storage.googleapis.com/${process.env.BUCKET_FREEZE}/${nameFile}`;
         } catch (err) {
@@ -61,7 +59,7 @@ class QueryRouter {
 
     static async query(ctx) {
         logger.info('Doing query');
-        
+
         const options = await QueryService.getTargetQuery(ctx);
         logger.debug('Doing request to adapter', options);
         if (!ctx.query.freeze || ctx.query.freeze !== 'true') {
@@ -72,7 +70,7 @@ class QueryRouter {
             });
             ctx.body = req.on('error', ctx.onerror).pipe(passThrough());
         } else {
-            let loggedUser = ctx.request.body.loggedUser;
+            let { loggedUser } = ctx.request.body;
             if (!loggedUser && ctx.query.loggedUser) {
                 loggedUser = JSON.parse(ctx.query.loggedUser);
             }
@@ -85,13 +83,12 @@ class QueryRouter {
                 ctx.body = {
                     url
                 };
-            } catch(err) {
+            } catch (err) {
                 if (err.statusCode) {
                     ctx.throw(err.statusCode, err.details);
                     return;
                 }
                 ctx.throw(500, 'Internal server error');
-                return;
             }
         }
     }
@@ -111,12 +108,12 @@ class QueryRouter {
 
             response.general = jiminy.recommendation();
             response.byColumns = {};
-            for (let i = 0, length = fields.length; i < length; i++) {
+            for (let i = 0, { length } = fields; i < length; i++) {
                 const column = fields[i].alias || fields[i].value;
                 response.byColumns[column] = jiminy.recommendation([column]);
             }
             response.byType = {};
-            for (let i = 0, length = charts.length; i < length; i++) {
+            for (let i = 0, { length } = charts; i < length; i++) {
                 response.byType[charts[i]] = {
                     general: jiminy.columns(charts[i]),
                     columns: {}
