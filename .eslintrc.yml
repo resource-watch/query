@@ -22,6 +22,7 @@ rules:
   no-param-reassign: [2, { "props": false }]
   indent: [2, 4]
   padded-blocks: [2, { "switches": "always", "classes": "always" }]
+  no-plusplus: ["error", { "allowForLoopAfterthoughts": true }]
   quotes:
     - 2
     - single
