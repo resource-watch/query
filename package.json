@@ -40,22 +40,22 @@
   },
   "dependencies": {
     "@google-cloud/storage": "^1.5.1",
-    "bluebird": "^3.4.7",
+    "bluebird": "^3.5.2",
     "bunyan": "^1.8.5",
-    "config": "^1.21.0",
+    "config": "^1.31.0",
     "ct-register-microservice-node": "2.1.6",
     "fs-promise": "^2.0.3",
     "jiminy": "0.1.1",
     "jsonapi-serializer": "3.5.6",
-    "kcors": "^2.1.1",
-    "koa": "^2.0.0",
-    "koa-body": "^1.4.0",
+    "kcors": "^2.2.2",
+    "koa": "^2.5.3",
+    "koa-body": "^1.7.0",
     "koa-convert": "^1.2.0",
     "koa-logger": "^2.0.0",
     "koa-mount": "2.0.0",
     "koa-router": "^7.0.1",
     "request": "2.88.0",
     "request-promise": "4.2.2",
-    "sql2json": "1.6.4"
+    "sql2json": "2.0.2"
   }
 }
