@@ -30,7 +30,7 @@ app.use(async (ctx, next) => {
         } catch (e) {
             logger.debug('Could not parse error message - is it JSON?: ', err);
         }
-        
+
         ctx.status = error.status || ctx.status || 500;
         if (this.status >= 500) {
             logger.error(error);
