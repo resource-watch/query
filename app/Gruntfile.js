@@ -5,6 +5,42 @@ module.exports = function (grunt) {
 
     grunt.initConfig({
 
+        express: {
+            dev: {
+                options: {
+                    script: 'app/index.js',
+                    node_env: 'dev',
+                    port: process.env.PORT,
+                    output: 'started'
+                }
+            }
+        },
+
+        watch: {
+            options: {
+                livereload: 35730
+            },
+            jssrc: {
+                files: [
+                    'app/src/**/*.js',
+                ],
+                tasks: ['express:dev'],
+                options: {
+                    spawn: false
+                }
+            },
+            e2eTest: {
+                files: [
+                    'app/test/e2e/**/*.spec.js',
+                ],
+                tasks: ['express:test', 'mochaTest:e2e'],
+                options: {
+                    spawn: true
+                }
+            },
+
+        },
+
         mochaTest: {
             e2e: {
                 options: {
@@ -31,9 +67,11 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('serve', ['express:dev', 'watch']);
+
     grunt.registerTask('test', ['mochaTest:e2e']);
 
-    grunt.registerTask('default', 'test');
+    grunt.registerTask('default', 'serve');
 
     grunt.loadNpmTasks('grunt-simple-nyc');
 
