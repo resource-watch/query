@@ -1,19 +1,19 @@
-develop:
-  extends:
-    file: base.yml
-    service: base
-  ports:
-    - "35749:35729"
-  environment:
-    CT_URL: http://mymachine:9000 
-    LOCAL_URL: http://mymachine:5000
-    API_VERSION: v1
-    CT_TOKEN: null
-    CT_REGISTER_MODE: auto
-    GCLOUD_STORAGE: ${GCLOUD_STORAGE}
-    GOOGLE_APPLICATION_CREDENTIALS: /opt/query/storage.json
-    BUCKET_FREEZE: query-freeze
-    
-  command: develop
-  volumes:
-    - ./app:/opt/query/app
+version: "3"
+services:
+  develop:
+    build: .
+    ports:
+      - "35749:35729"
+    environment:
+      CT_URL: http://mymachine:9000
+      LOCAL_URL: http://mymachine:5000
+      API_VERSION: v1
+      CT_TOKEN: null
+      CT_REGISTER_MODE: auto
+      GCLOUD_STORAGE: ${GCLOUD_STORAGE}
+      GOOGLE_APPLICATION_CREDENTIALS: /opt/query/storage.json
+      BUCKET_FREEZE: query-freeze
+
+    command: develop
+    volumes:
+      - ./app:/opt/query/app
