@@ -1,5 +1,6 @@
 # Query Microservice
 
+[![Build Status](https://travis-ci.org/resource-watch/query.svg?branch=develop)](https://travis-ci.org/resource-watch/query)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/3e6b21174a2e8fe2192c/test_coverage)](https://codeclimate.com/github/resource-watch/query/test_coverage)
 
 This repository is the query microservice for WRI API
