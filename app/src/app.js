@@ -6,6 +6,7 @@ const loader = require('loader');
 const convert = require('koa-convert');
 const ctRegisterMicroservice = require('ct-register-microservice-node');
 const ErrorSerializer = require('serializers/error.serializer');
+const koaSimpleHealthCheck = require('koa-simple-healthcheck');
 
 const koaBody = require('koa-body')({
     multipart: true,
@@ -47,6 +48,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(koaLogger());
+app.use(koaSimpleHealthCheck());
 
 loader.loadRoutes(app);
 

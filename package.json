@@ -64,6 +64,7 @@
     "koa-logger": "^2.0.0",
     "koa-mount": "2.0.0",
     "koa-router": "^7.0.1",
+    "koa-simple-healthcheck": "^0.0.1",
     "request": "2.88.0",
     "request-promise": "4.2.2",
     "sql2json": "2.0.6"
