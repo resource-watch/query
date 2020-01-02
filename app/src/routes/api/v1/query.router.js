@@ -53,6 +53,7 @@ class QueryRouter {
                 if (exists) {
                     await fs.unlink(`/tmp/${nameFile}`);
                 }
+                // eslint-disable-next-line no-empty
             } catch (err) {}
         }
     }
