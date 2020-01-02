@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 module.exports = {
     cf_viirsfiresbyiso: {
         uri: '/viirs-active-fires/admin/${iso}',
@@ -74,7 +75,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_viirsfiresbygeostore: {
+    },
+    cf_viirsfiresbygeostore: {
         uri: '/viirs-active-fires',
         method: 'GET',
         arguments: [{
@@ -175,7 +177,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_gladalertsbygeostore: {
+    },
+    cf_gladalertsbygeostore: {
         uri: '/glad-alerts',
         method: 'GET',
         arguments: [{
@@ -191,7 +194,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_gladalertslatest: {
+    },
+    cf_gladalertslatest: {
         uri: '/glad-alerts/latest',
         method: 'GET',
         arguments: [{
@@ -275,7 +279,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_guiralossbygeostore: {
+    },
+    cf_guiralossbygeostore: {
         uri: '/guira-loss',
         method: 'GET',
         arguments: [{
@@ -291,7 +296,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_guiralosslatest: {
+    },
+    cf_guiralosslatest: {
         uri: '/guira-loss/latest',
         method: 'GET',
         arguments: [{
@@ -407,7 +413,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_imazonalertsbygeostore: {
+    },
+    cf_imazonalertsbygeostore: {
         uri: '/imazon-alerts',
         method: 'GET',
         arguments: [{
@@ -431,7 +438,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_imazonalertslatest: {
+    },
+    cf_imazonalertslatest: {
         uri: '/imazon-alerts/latest',
         method: 'GET',
         arguments: [{
@@ -515,7 +523,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_prodeslossbygeostore: {
+    },
+    cf_prodeslossbygeostore: {
         uri: '/prodes-loss',
         method: 'GET',
         arguments: [{
@@ -531,7 +540,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_prodeslosslatest: {
+    },
+    cf_prodeslosslatest: {
         uri: '/prodes-loss/latest',
         method: 'GET',
         arguments: [{
@@ -647,7 +657,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_quiccalertsbygeostore: {
+    },
+    cf_quiccalertsbygeostore: {
         uri: '/quicc-alerts',
         method: 'GET',
         arguments: [{
@@ -671,7 +682,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_quiccalertslatest: {
+    },
+    cf_quiccalertslatest: {
         uri: '/quicc-alerts/latest',
         method: 'GET',
         arguments: [{
@@ -755,7 +767,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_terraialertsbygeostore: {
+    },
+    cf_terraialertsbygeostore: {
         uri: '/terrai-alerts',
         method: 'GET',
         arguments: [{
@@ -771,7 +784,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_terraialertslatest: {
+    },
+    cf_terraialertslatest: {
         uri: '/terrai-alerts/latest',
         method: 'GET',
         arguments: [{
@@ -871,7 +885,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_umdlossgainbygeostore: {
+    },
+    cf_umdlossgainbygeostore: {
         uri: '/terrai-alerts',
         method: 'GET',
         arguments: [{
@@ -891,7 +906,8 @@ module.exports = {
             required: false,
             location: 'query'
         }]
-    }, cf_umdlossgainlatest: {
+    },
+    cf_umdlossgainlatest: {
         uri: '/terrai-alerts/latest',
         method: 'GET',
         arguments: [{
