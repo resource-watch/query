@@ -13,12 +13,12 @@ case "$1" in
         ;;
     test)
         echo "Running Test"
-        exec npm test
+        exec yarn test
         ;;
     start)
         echo "Running Start"
         echo -e "$GCLOUD_STORAGE" | base64 -d > storage.json
-        exec npm start
+        exec yarn start
         ;;
     *)
         exec "$@"
