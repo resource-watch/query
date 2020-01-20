@@ -7,24 +7,23 @@ const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 const ValidationError = require('errors/validation.error');
 const endpoints = require('services/endpoints');
 
-const deserializer = (obj) =>
-    new Promise((resolve, reject) => {
-        new JSONAPIDeserializer({
-            keyForAttribute: 'camelCase'
-        }).deserialize(obj, (err, data) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            resolve(data);
-        });
+const deserializer = obj => new Promise((resolve, reject) => {
+    new JSONAPIDeserializer({
+        keyForAttribute: 'camelCase'
+    }).deserialize(obj, (err, data) => {
+        if (err) {
+            reject(err);
+            return;
+        }
+        resolve(data);
     });
+});
 
 const containApps = (apps1, apps2) => {
     if (!apps1 || !apps2) {
         return false;
     }
-    for (let i = 0, length = apps1.length; i < length; i++) {
+    for (let i = 0, { length } = apps1; i < length; i++) {
         for (let j = 0, length2 = apps2.length; j < length2; j++) {
             if (apps1[i] === apps2[j]) {
                 return true;
@@ -40,7 +39,7 @@ const checkUserHasPermission = (user, dataset) => {
         // check if user is admin of any application of the dataset or manager and owner of the dataset
         if (user.role === 'MANAGER' && user.id === dataset.userId) {
             return true;
-        } else if (user.role === 'ADMIN' && containApps(dataset.application, user.extraUserData ? user.extraUserData.apps : null)) {
+        } if (user.role === 'ADMIN' && containApps(dataset.application, user.extraUserData ? user.extraUserData.apps : null)) {
             return true;
         }
     }
@@ -60,12 +59,12 @@ const generateTemplateString = (function () {
             // Replace ${expressions} (etc) with ${map.expressions}.
 
             const sanitized = template
-                .replace(/\$\{([\s]*[^;\s\{]+[\s]*)\}/g, (_, match) => {
-                    return `\$\{map.${match.trim()}\}`;
-                })
+                // eslint-disable-next-line no-useless-escape
+                .replace(/\$\{([\s]*[^;\s\{]+[\s]*)\}/g, (_, match) => `\$\{map.${match.trim()}\}`)
                 // Afterwards, replace anything that's not ${map.expressions}' (etc) with a blank string.
                 .replace(/(\$\{(?!map\.)[^}]+\})/g, '');
 
+            // eslint-disable-next-line no-new-func
             fn = Function('map', `return \`${sanitized}\``);
 
         }
@@ -74,7 +73,7 @@ const generateTemplateString = (function () {
     }
 
     return generateTemplate;
-})();
+}());
 
 class QueryService {
 
@@ -102,32 +101,30 @@ class QueryService {
         const path = {};
         const qs = {};
         const body = {};
-        for (let i = 0, length = endpointConfig.arguments.length; i < length; i++) {
+        for (let i = 0, { length } = endpointConfig.arguments; i < length; i++) {
             const arg = endpointConfig.arguments[i];
             const argFun = node.arguments[i];
             if (!argFun) {
                 if (arg.required) {
                     throw new ValidationError(400, 'Invalid query. Required param');
                 }
-            } else {
-                if (arg.location === 'path') {
-                    if (!path[arg.name]) {
-                        path[arg.name] = argFun.value;
-                    } else {
-                        path[arg.name] += `,${argFun.value}`;
-                    }
-                } else if (arg.location === 'query') {
-                    if (!qs[arg.name]) {
-                        qs[arg.name] = argFun.value;
-                    } else {
-                        qs[arg.name] += `,${argFun.value}`;
-                    }
-                } else if (arg.location === 'body') {
-                    if (!body[arg.name]) {
-                        body[arg.name] = argFun.value;
-                    } else {
-                        body[arg.name] += `,${argFun.value}`;
-                    }
+            } else if (arg.location === 'path') {
+                if (!path[arg.name]) {
+                    path[arg.name] = argFun.value;
+                } else {
+                    path[arg.name] += `,${argFun.value}`;
+                }
+            } else if (arg.location === 'query') {
+                if (!qs[arg.name]) {
+                    qs[arg.name] = argFun.value;
+                } else {
+                    qs[arg.name] += `,${argFun.value}`;
+                }
+            } else if (arg.location === 'body') {
+                if (!body[arg.name]) {
+                    body[arg.name] = argFun.value;
+                } else {
+                    body[arg.name] += `,${argFun.value}`;
                 }
             }
         }
@@ -233,7 +230,6 @@ class QueryService {
     }
 
 
-
     static async getTargetQuery(ctx) {
         logger.debug('Obtaining target query');
         const sql = ctx.query.sql || ctx.request.body.sql;
@@ -250,7 +246,7 @@ class QueryService {
             return QueryService.isFunction(parsed);
         }
 
-        return await QueryService.isQuery(tableName, parsed, sql, ctx);
+        return QueryService.isQuery(tableName, parsed, sql, ctx);
     }
 
     static getFieldsOfSql(ctx) {

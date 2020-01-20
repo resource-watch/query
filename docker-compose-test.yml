@@ -3,9 +3,13 @@ services:
   test:
     build: .
     ports:
-      - "3005"
+      - "5000:5000"
     container_name: query-test
     environment:
       NODE_ENV: test
+      PORT: 5000
       CT_URL: http://mymachine:9000
+      API_VERSION: v1
+      CT_REGISTER_MODE: auto
+      MONGO_PORT_27017_TCP_ADDR: mongo
     command: test
