@@ -2,21 +2,28 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    name: {name}
+    name: query
     app: rw
-  name: {name}
+  name: query
 spec:
   revisionHistoryLimit: 2
   template:
     metadata:
-      annotations:
-        chaos.alpha.kubernetes.io/enabled: "true"
       labels:
-        name: {name}
+        name: query
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: type
+                    operator: In
+                    values:
+                      - apps
       containers:
-      - name: {name}
-        image: vizzuality/{name}
+      - name: query
+        image: vizzuality/query
         imagePullPolicy: Always
         resources:
           requests:
@@ -35,7 +42,7 @@ spec:
           - name: NODE_PATH
             value: app/src
           - name: LOCAL_URL
-            value: http://{name}.default.svc.cluster.local:5000
+            value: http://query.default.svc.cluster.local:5000
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /opt/query/storage.json
           - name: BUCKET_FREEZE
