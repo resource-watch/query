@@ -5,6 +5,7 @@ const Json2sql = require('sql2json').json2sql;
 const ctRegisterMicroservice = require('ct-register-microservice-node');
 const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 const ValidationError = require('errors/validation.error');
+const QueryParsingError = require('errors/queryParsing.error');
 const endpoints = require('services/endpoints');
 
 const deserializer = (obj) => new Promise((resolve, reject) => {
@@ -39,7 +40,8 @@ const checkUserHasPermission = (user, dataset) => {
         // check if user is admin of any application of the dataset or manager and owner of the dataset
         if (user.role === 'MANAGER' && user.id === dataset.userId) {
             return true;
-        } if (user.role === 'ADMIN' && containApps(dataset.application, user.extraUserData ? user.extraUserData.apps : null)) {
+        }
+        if (user.role === 'ADMIN' && containApps(dataset.application, user.extraUserData ? user.extraUserData.apps : null)) {
             return true;
         }
     }
@@ -230,8 +232,12 @@ class QueryService {
         if (!sql && !tableName) {
             throw new ValidationError(400, 'Sql o FS required');
         }
-        if (sql) {
-            parsed = new Sql2json(sql).toJSON();
+        try {
+            if (sql) {
+                parsed = new Sql2json(sql).toJSON();
+            }
+        } catch (e) {
+            throw new QueryParsingError(e.message);
         }
         if (!tableName && !parsed.from) {
             logger.debug('Check if it is a function');
