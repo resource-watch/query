@@ -5,7 +5,23 @@
 
 This repository is the query microservice for WRI API
 
-1. [Getting Started](#getting-started)
+1. [Dependencies](#dependencies)
+2. [Getting Started](#getting-started)
+
+## Dependencies
+
+ glad-alerts, guira-loss, imazon-alerts, jiminy, prodes-loss, quicc-alerts, terrai-alerts, viirs-active-fires
+
+Dependencies on other Microservices:
+- [Dataset](https://github.com/resource-watch/dataset/)
+- [Glad Alerts](https://github.com/gfw-api/glad-analysis-tiled)
+- [GFW Guira Loss](https://github.com/gfw-api/gfw-guira-loss-api)
+- [GFW Imazon Alerts](https://github.com/gfw-api/gfw-imazon-alerts-api)
+- [GFW Prodes Loss](https://github.com/gfw-api/gfw-prodes-loss-api)
+- [GFW Quicc Alerts](https://github.com/gfw-api/gfw-quicc-alerts-api)
+- [Query](https://github.com/resource-watch/query/)
+- [Terra-i Alerts]()
+- [Viirs Active Fires](https://github.com/gfw-api/gfw-viirs-fires-api)
 
 ## Getting Started
 
