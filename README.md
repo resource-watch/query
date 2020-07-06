@@ -19,9 +19,8 @@ Dependencies on other Microservices:
 - [GFW Imazon Alerts](https://github.com/gfw-api/gfw-imazon-alerts-api)
 - [GFW Prodes Loss](https://github.com/gfw-api/gfw-prodes-loss-api)
 - [GFW Quicc Alerts](https://github.com/gfw-api/gfw-quicc-alerts-api)
-- [Query](https://github.com/resource-watch/query/)
-- [Terra-i Alerts]()
-- [Viirs Active Fires](https://github.com/gfw-api/gfw-viirs-fires-api)
+- [GFW Terra-i Alerts](https://github.com/gfw-api/gfw-terrai-alerts-api)
+- [GFW Viirs Active Fires](https://github.com/gfw-api/gfw-viirs-fires-api)
 
 ## Getting Started
 
