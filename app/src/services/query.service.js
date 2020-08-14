@@ -7,7 +7,7 @@ const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 const ValidationError = require('errors/validation.error');
 const endpoints = require('services/endpoints');
 
-const deserializer = obj => new Promise((resolve, reject) => {
+const deserializer = (obj) => new Promise((resolve, reject) => {
     new JSONAPIDeserializer({
         keyForAttribute: 'camelCase'
     }).deserialize(obj, (err, data) => {
@@ -163,7 +163,7 @@ class QueryService {
             dataset = await deserializer(dataset);
         } catch (err) {
             logger.error('Error obtaining dataset', err);
-            if (err.status === 404) {
+            if (err.statusCode === 404) {
                 throw new ValidationError(404, 'Dataset not found');
             }
             throw new ValidationError(500, err.message);
@@ -185,27 +185,19 @@ class QueryService {
             const newSql = Json2sql.toSQL(parsed);
 
             if (ctx.method === 'GET') {
-                qs = Object.assign({}, ctx.query, {
-                    sql: newSql
-                });
+                qs = { ...ctx.query, sql: newSql };
             } else {
-                qs = Object.assign({}, ctx.query);
+                qs = { ...ctx.query };
                 delete qs.sql;
-                body = Object.assign({}, ctx.request.body, {
-                    sql: newSql
-                });
+                body = { ...ctx.request.body, sql: newSql };
             }
         } else {
             const newTableName = dataset.tableName;
             if (ctx.method === 'GET') {
-                qs = Object.assign({}, ctx.query, {
-                    tableName: newTableName
-                });
+                qs = { ...ctx.query, tableName: newTableName };
             } else {
-                qs = Object.assign({}, ctx.query);
-                body = Object.assign({}, ctx.request.body, {
-                    tableName: newTableName
-                });
+                qs = { ...ctx.query };
+                body = { ...ctx.request.body, tableName: newTableName };
             }
         }
         logger.debug('ctx', ctx.path);

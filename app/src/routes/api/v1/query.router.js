@@ -138,7 +138,11 @@ class QueryRouter {
 }
 
 router.post('/query', QueryRouter.query);
+router.post('/query/:dataset', QueryRouter.query);
+
 router.post('/download', QueryRouter.query);
+router.post('/download/:dataset', QueryRouter.query);
+
 router.get('/jiminy', QueryRouter.jiminy);
 router.post('/jiminy', QueryRouter.jiminy);
 
