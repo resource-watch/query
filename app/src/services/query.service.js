@@ -144,8 +144,8 @@ class QueryService {
 
     static async isQuery(tableName, parsed, sql, ctx) {
         logger.debug('Is query');
-        let datasetId = tableName;
-        if (parsed.from) {
+        let datasetId = ctx.params.dataset || tableName;
+        if (parsed.from && !datasetId) {
             datasetId = parsed.from.replace(/"/g, '').replace(/'/g, '');
         }
         if (!datasetId) {
@@ -204,7 +204,7 @@ class QueryService {
         }
         logger.debug('ctx', ctx.path);
         const options = {
-            uri: `${process.env.CT_URL}/${process.env.API_VERSION}${ctx.path !== '/jiminy' ? ctx.path : '/query'}/${dataset.id}`,
+            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/query/${dataset.provider}/${dataset.id}`,
             simple: false,
             resolveWithFullResponse: true,
             json: true
