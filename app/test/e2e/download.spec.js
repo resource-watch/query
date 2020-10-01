@@ -10,7 +10,7 @@ const requester = getTestServer();
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
 
-describe('GET query', () => {
+describe('GET download', () => {
 
     before(async () => {
         if (process.env.NODE_ENV !== 'test') {
@@ -20,7 +20,7 @@ describe('GET query', () => {
         nock.cleanAll();
     });
 
-    it('Doing a basic query for a dataset that does not exist should return a 400', async () => {
+    it('Doing a basic download for a dataset that does not exist should return a 400', async () => {
         nock(process.env.CT_URL)
             .get(`/v1/dataset/data`)
             .reply(404, {
@@ -33,7 +33,7 @@ describe('GET query', () => {
             });
 
         const response = await requester
-            .post(`/api/v1/query`)
+            .post(`/api/v1/download`)
             .send({
                 sql: 'select 1 from data'
             });
@@ -43,7 +43,7 @@ describe('GET query', () => {
         response.body.errors[0].should.have.property('detail').and.equal(`Dataset not found`);
     });
 
-    it('Doing a basic query should forward the request to the corresponding endpoint (happy case)', async () => {
+    it('Doing a basic download should forward the request to the corresponding endpoint (happy case)', async () => {
         const timestamp = new Date().getTime();
 
         createMockGetDataset(timestamp);
@@ -57,10 +57,10 @@ describe('GET query', () => {
             meta: {
                 cloneUrl: {
                     http_method: 'POST',
-                    url: `/v1/query/${timestamp}/clone`,
+                    url: `/v1/download/${timestamp}/clone`,
                     body: {
                         dataset: {
-                            datasetUrl: `/v1/query/${timestamp}`,
+                            datasetUrl: `/v1/download/${timestamp}`,
                             application: ['your', 'apps']
                         }
                     }
@@ -69,14 +69,14 @@ describe('GET query', () => {
         };
 
         nock(process.env.CT_URL)
-            .post(`/v1/query/csv/${timestamp}`, {
+            .post(`/v1/download/csv/${timestamp}`, {
                 sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
             })
             .reply(200, reply);
 
 
         const response = await requester
-            .post(`/api/v1/query`)
+            .post(`/api/v1/download`)
             .send({
                 sql: `select 1 from ${timestamp}`
             });
@@ -85,33 +85,33 @@ describe('GET query', () => {
         response.body.should.deep.equal(reply);
     });
 
-    it('Calling the query endpoint with no sql parameter should return a 400 error message', async () => {
-        const response = await requester.post(`/api/v1/query`);
+    it('Calling the download endpoint with no sql parameter should return a 400 error message', async () => {
+        const response = await requester.post(`/api/v1/download`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
         response.body.errors[0].should.have.property('detail').and.equal('Sql o FS required');
     });
 
-    it('Calling the query endpoint with an empty sql parameter should return a 400 error message', async () => {
+    it('Calling the download endpoint with an empty sql parameter should return a 400 error message', async () => {
         const response = await requester
-            .post(`/api/v1/query?sql=`);
+            .post(`/api/v1/download?sql=`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
         response.body.errors[0].should.have.property('detail').and.equal('Sql o FS required');
     });
 
-    it('Calling the query endpoint with an invalid sql query should return a 400 error message', async () => {
+    it('Calling the download endpoint with an invalid sql download should return a 400 error message', async () => {
         const response = await requester
-            .post(`/api/v1/query?sql=foo`);
+            .post(`/api/v1/download?sql=foo`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
         response.body.errors[0].should.have.property('detail').and.equal('Unsupported query element detected: foo');
     });
 
-    it('Calling the query endpoint with a valid sql query should return a 200', async () => {
+    it('Calling the download endpoint with a valid sql download should return a 200', async () => {
         nock(process.env.CT_URL)
             .get('/v1/dataset/dataset')
             .reply(200, {
@@ -172,13 +172,13 @@ describe('GET query', () => {
 
 
         nock(process.env.CT_URL)
-            .post('/v1/query/csv/06c44f9a-aae7-401e-874c-de13b7764959', {
+            .post('/v1/download/csv/06c44f9a-aae7-401e-874c-de13b7764959', {
                 sql: 'SELECT * FROM index_06c44f9aaae7401e874cde13b7764959'
             })
             .reply(200, { data: 'aaa' });
 
         const response = await requester
-            .post(`/api/v1/query?sql=select * from dataset`);
+            .post(`/api/v1/download?sql=select * from dataset`);
 
         response.status.should.equal(200);
         response.body.should.deep.equal({ data: 'aaa' });
