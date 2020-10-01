@@ -69,7 +69,7 @@ describe('GET query', () => {
         };
 
         nock(process.env.CT_URL)
-            .post(`/v1/query/csv/${timestamp}`, {
+            .post(`/v1/query/${timestamp}`, {
                 sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
             })
             .reply(200, reply);
@@ -172,7 +172,7 @@ describe('GET query', () => {
 
 
         nock(process.env.CT_URL)
-            .post('/v1/query/csv/06c44f9a-aae7-401e-874c-de13b7764959', {
+            .post('/v1/query/06c44f9a-aae7-401e-874c-de13b7764959', {
                 sql: 'SELECT * FROM index_06c44f9aaae7401e874cde13b7764959'
             })
             .reply(200, { data: 'aaa' });
