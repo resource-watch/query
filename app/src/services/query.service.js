@@ -142,7 +142,7 @@ class QueryService {
         };
     }
 
-    static async isQuery(tableName, parsed, sql, ctx) {
+    static async isQuery(tableName, parsed, sql, ctx, endpoint) {
         logger.debug('Is query');
         let datasetId = ctx.params.dataset || tableName;
         if (parsed.from && !datasetId) {
@@ -178,12 +178,9 @@ class QueryService {
         }
 
         let body = null;
-        let qs = null;
+        let qs;
         if (sql) {
             parsed.from = dataset.tableName;
-            if (dataset.provider === 'gee') {
-                parsed.from = dataset.tableName;
-            }
             const newSql = Json2sql.toSQL(parsed);
 
             if (ctx.method === 'GET') {
@@ -202,21 +199,20 @@ class QueryService {
                 body = { ...ctx.request.body, tableName: newTableName };
             }
         }
-        logger.debug('ctx', ctx.path);
+        logger.debug('isQuery - ctx.path', ctx.path);
         const options = {
-            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/query/${dataset.provider}/${dataset.id}`,
+            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/${endpoint}/${dataset.provider}/${dataset.id}`,
             simple: false,
             resolveWithFullResponse: true,
             json: true
         };
+
+        delete qs.loggedUser;
+        options.qs = qs;
         if (ctx.method === 'GET') {
-            delete qs.loggedUser;
-            options.qs = qs;
             options.method = 'GET';
         } else {
-            delete qs.loggedUser;
             delete body.loggedUser;
-            options.qs = qs;
             options.body = body;
             options.method = 'POST';
         }
@@ -224,7 +220,7 @@ class QueryService {
     }
 
 
-    static async getTargetQuery(ctx) {
+    static async getTargetQuery(ctx, endpoint) {
         logger.debug('Obtaining target query');
         const sql = ctx.query.sql || ctx.request.body.sql;
         const tableName = ctx.query.tableName || ctx.request.body.tableName;
@@ -244,7 +240,7 @@ class QueryService {
             return QueryService.isFunction(parsed);
         }
 
-        return QueryService.isQuery(tableName, parsed, sql, ctx);
+        return QueryService.isQuery(tableName, parsed, sql, ctx, endpoint);
     }
 
     static getFieldsOfSql(ctx) {

@@ -84,7 +84,7 @@ describe('GET download', () => {
                 meta: {
                     cloneUrl: {
                         http_method: 'POST',
-                        url: `/v1/query/${timestamp}/clone`,
+                        url: `/v1/download/${timestamp}/clone`,
                         body: {
                             dataset: {
                                 datasetUrl: `/v1/query/${timestamp}`,
@@ -96,7 +96,7 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/query/${provider}/${timestamp}`, {
+                .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
@@ -130,7 +130,7 @@ describe('GET download', () => {
                 meta: {
                     cloneUrl: {
                         http_method: 'POST',
-                        url: `/v1/query/${timestamp}/clone`,
+                        url: `/v1/download/${timestamp}/clone`,
                         body: {
                             dataset: {
                                 datasetUrl: `/v1/query/${timestamp}`,
@@ -142,7 +142,7 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/query/${provider}/${timestamp}`, {
+                .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
@@ -176,10 +176,10 @@ describe('GET download', () => {
                 meta: {
                     cloneUrl: {
                         http_method: 'POST',
-                        url: `/v1/query/${timestamp}/clone`,
+                        url: `/v1/download/${timestamp}/clone`,
                         body: {
                             dataset: {
-                                datasetUrl: `/v1/query/${timestamp}`,
+                                datasetUrl: `/v1/download/${timestamp}`,
                                 application: ['your', 'apps']
                             }
                         }
@@ -188,7 +188,7 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/query/${provider}/${timestamp}`, {
+                .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
@@ -222,7 +222,7 @@ describe('GET download', () => {
                 meta: {
                     cloneUrl: {
                         http_method: 'POST',
-                        url: `/v1/query/${timestamp}/clone`,
+                        url: `/v1/download/${timestamp}/clone`,
                         body: {
                             dataset: {
                                 datasetUrl: `/v1/query/${timestamp}`,
@@ -234,7 +234,7 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/query/${provider}/${timestamp}`, {
+                .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);

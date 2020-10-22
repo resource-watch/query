@@ -61,7 +61,7 @@ class QueryRouter {
     static async query(ctx) {
         logger.info('Doing query');
 
-        const options = await QueryService.getTargetQuery(ctx);
+        const options = await QueryService.getTargetQuery(ctx, ctx.path.split('/')[1]);
         logger.debug('Doing request to adapter', options);
         if (!ctx.query.freeze || ctx.query.freeze !== 'true') {
             const req = request(options);
@@ -98,7 +98,7 @@ class QueryRouter {
         logger.info('Doing jiminy');
         try {
 
-            const options = await QueryService.getTargetQuery(ctx);
+            const options = await QueryService.getTargetQuery(ctx, 'query');
             const fields = QueryService.getFieldsOfSql(ctx);
             options.simple = true;
             options.resolveWithFullResponse = false;
