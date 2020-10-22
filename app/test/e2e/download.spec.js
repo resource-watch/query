@@ -43,48 +43,6 @@ describe('GET download', () => {
         response.body.errors[0].should.have.property('detail').and.equal(`Dataset not found`);
     });
 
-    it('Doing a basic download should forward the request to the corresponding endpoint (happy case)', async () => {
-        const timestamp = new Date().getTime();
-
-        createMockGetDataset(timestamp);
-
-        const reply = {
-            data: [{
-                field1: 'value1',
-                field2: 'value2',
-                field3: 'value3'
-            }],
-            meta: {
-                cloneUrl: {
-                    http_method: 'POST',
-                    url: `/v1/download/${timestamp}/clone`,
-                    body: {
-                        dataset: {
-                            datasetUrl: `/v1/download/${timestamp}`,
-                            application: ['your', 'apps']
-                        }
-                    }
-                }
-            }
-        };
-
-        nock(process.env.CT_URL)
-            .post(`/v1/download/csv/${timestamp}`, {
-                sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
-            })
-            .reply(200, reply);
-
-
-        const response = await requester
-            .post(`/api/v1/download`)
-            .send({
-                sql: `select 1 from ${timestamp}`
-            });
-
-        response.status.should.equal(200);
-        response.body.should.deep.equal(reply);
-    });
-
     it('Calling the download endpoint with no sql parameter should return a 400 error message', async () => {
         const response = await requester.post(`/api/v1/download`);
 
@@ -111,77 +69,188 @@ describe('GET download', () => {
         response.body.errors[0].should.have.property('detail').and.equal('Unsupported query element detected: foo');
     });
 
-    it('Calling the download endpoint with a valid sql download should return a 200', async () => {
-        nock(process.env.CT_URL)
-            .get('/v1/dataset/dataset')
-            .reply(200, {
-                data: {
-                    id: '06c44f9a-aae7-401e-874c-de13b7764959',
-                    type: 'dataset',
-                    attributes: {
-                        name: 'Historical Precipitation -- U.S. (Puget Sound Lowlands)',
-                        slug: 'Historical-Precipitation-US-Puget-Sound-Lowlands-1490086842133',
-                        type: 'tabular',
-                        subtitle: null,
-                        application: [
-                            'prep'
-                        ],
-                        dataPath: null,
-                        attributesPath: null,
-                        connectorType: 'document',
-                        provider: 'csv',
-                        userId: '586bc76036aacd381cb92b3a',
-                        connectorUrl: 'https://raw.githubusercontent.com/fgassert/PREP-washington-observed-data/master/observed_precip.csv',
-                        sources: [],
-                        tableName: 'index_06c44f9aaae7401e874cde13b7764959',
-                        status: 'saved',
-                        published: false,
-                        overwrite: false,
-                        mainDateField: null,
-                        env: 'production',
-                        geoInfo: false,
-                        protected: false,
-                        legend: {
-                            date: [],
-                            region: [],
-                            country: [],
-                            nested: [],
-                            integer: [],
-                            short: [],
-                            byte: [],
-                            double: [],
-                            float: [],
-                            half_float: [],
-                            scaled_float: [],
-                            boolean: [],
-                            binary: [],
-                            text: [],
-                            keyword: []
-                        },
-                        clonedHost: {},
-                        errorMessage: null,
-                        taskId: null,
-                        createdAt: '2016-08-01T15:28:15.050Z',
-                        updatedAt: '2018-01-05T18:15:23.266Z',
-                        dataLastUpdated: null,
-                        widgetRelevantProps: [],
-                        layerRelevantProps: []
+    it('Doing a download request to a document dataset should forward the request to the corresponding endpoint (happy case - dataset id in request)', async () => {
+        const testDocumentDataset = async (provider) => {
+            const timestamp = new Date().getTime();
+
+            createMockGetDataset(timestamp, { connectorType: 'rest', provider });
+
+            const reply = {
+                data: [{
+                    field1: 'value1',
+                    field2: 'value2',
+                    field3: 'value3'
+                }],
+                meta: {
+                    cloneUrl: {
+                        http_method: 'POST',
+                        url: `/v1/query/${timestamp}/clone`,
+                        body: {
+                            dataset: {
+                                datasetUrl: `/v1/query/${timestamp}`,
+                                application: ['your', 'apps']
+                            }
+                        }
                     }
                 }
-            });
+            };
+
+            nock(process.env.CT_URL)
+                .post(`/v1/query/${provider}/${timestamp}`, {
+                    sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
+                })
+                .reply(200, reply);
 
 
-        nock(process.env.CT_URL)
-            .post('/v1/download/csv/06c44f9a-aae7-401e-874c-de13b7764959', {
-                sql: 'SELECT * FROM index_06c44f9aaae7401e874cde13b7764959'
-            })
-            .reply(200, { data: 'aaa' });
+            const response = await requester
+                .post(`/api/v1/download`)
+                .send({
+                    sql: `select 1 from ${timestamp}`
+                });
 
-        const response = await requester
-            .post(`/api/v1/download?sql=select * from dataset`);
+            response.status.should.equal(200);
+            response.body.should.deep.equal(reply);
+        };
 
-        response.status.should.equal(200);
-        response.body.should.deep.equal({ data: 'aaa' });
+        return Promise.all(['json', 'tsv', 'csv', 'xml'].map((provider) => testDocumentDataset(provider)));
+    });
+
+    it('Doing a download request to a rest dataset should forward the request to the corresponding endpoint (happy case - dataset id in request)', async () => {
+        const testDocumentDataset = async (provider) => {
+            const timestamp = new Date().getTime();
+
+            createMockGetDataset(timestamp, { connectorType: 'document', provider });
+
+            const reply = {
+                data: [{
+                    field1: 'value1',
+                    field2: 'value2',
+                    field3: 'value3'
+                }],
+                meta: {
+                    cloneUrl: {
+                        http_method: 'POST',
+                        url: `/v1/query/${timestamp}/clone`,
+                        body: {
+                            dataset: {
+                                datasetUrl: `/v1/query/${timestamp}`,
+                                application: ['your', 'apps']
+                            }
+                        }
+                    }
+                }
+            };
+
+            nock(process.env.CT_URL)
+                .post(`/v1/query/${provider}/${timestamp}`, {
+                    sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
+                })
+                .reply(200, reply);
+
+
+            const response = await requester
+                .post(`/api/v1/download`)
+                .send({
+                    sql: `select 1 from ${timestamp}`
+                });
+
+            response.status.should.equal(200);
+            response.body.should.deep.equal(reply);
+        };
+
+        return Promise.all(['featureservice', 'cartodb', 'wms', 'bigquery', 'gee', 'loca', 'nexgddp', 'rasdaman', 'vector'].map((provider) => testDocumentDataset(provider)));
+    });
+
+    it('Doing a download request to a document dataset should forward the request to the corresponding endpoint (happy case - dataset id in query)', async () => {
+        const testDocumentDataset = async (provider) => {
+            const timestamp = new Date().getTime();
+
+            createMockGetDataset(timestamp, { connectorType: 'rest', provider });
+
+            const reply = {
+                data: [{
+                    field1: 'value1',
+                    field2: 'value2',
+                    field3: 'value3'
+                }],
+                meta: {
+                    cloneUrl: {
+                        http_method: 'POST',
+                        url: `/v1/query/${timestamp}/clone`,
+                        body: {
+                            dataset: {
+                                datasetUrl: `/v1/query/${timestamp}`,
+                                application: ['your', 'apps']
+                            }
+                        }
+                    }
+                }
+            };
+
+            nock(process.env.CT_URL)
+                .post(`/v1/query/${provider}/${timestamp}`, {
+                    sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
+                })
+                .reply(200, reply);
+
+
+            const response = await requester
+                .post(`/api/v1/download/${timestamp}`)
+                .send({
+                    sql: `select 1 from data`
+                });
+
+            response.status.should.equal(200);
+            response.body.should.deep.equal(reply);
+        };
+
+        return Promise.all(['json', 'tsv', 'csv', 'xml'].map((provider) => testDocumentDataset(provider)));
+    });
+
+    it('Doing a download request to a rest dataset should forward the request to the corresponding endpoint (happy case - dataset id in query)', async () => {
+        const testDocumentDataset = async (provider) => {
+            const timestamp = new Date().getTime();
+
+            createMockGetDataset(timestamp, { connectorType: 'document', provider });
+
+            const reply = {
+                data: [{
+                    field1: 'value1',
+                    field2: 'value2',
+                    field3: 'value3'
+                }],
+                meta: {
+                    cloneUrl: {
+                        http_method: 'POST',
+                        url: `/v1/query/${timestamp}/clone`,
+                        body: {
+                            dataset: {
+                                datasetUrl: `/v1/query/${timestamp}`,
+                                application: ['your', 'apps']
+                            }
+                        }
+                    }
+                }
+            };
+
+            nock(process.env.CT_URL)
+                .post(`/v1/query/${provider}/${timestamp}`, {
+                    sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
+                })
+                .reply(200, reply);
+
+
+            const response = await requester
+                .post(`/api/v1/download/${timestamp}`)
+                .send({
+                    sql: `select 1 from data`
+                });
+
+            response.status.should.equal(200);
+            response.body.should.deep.equal(reply);
+        };
+
+        return Promise.all(['featureservice', 'cartodb', 'wms', 'bigquery', 'gee', 'loca', 'nexgddp', 'rasdaman', 'vector'].map((provider) => testDocumentDataset(provider)));
     });
 
     afterEach(async () => {

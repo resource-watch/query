@@ -182,7 +182,7 @@ class QueryService {
         if (sql) {
             parsed.from = dataset.tableName;
             if (dataset.provider === 'gee') {
-                parsed.from = `'${dataset.tableName}'`;
+                parsed.from = dataset.tableName;
             }
             const newSql = Json2sql.toSQL(parsed);
 
