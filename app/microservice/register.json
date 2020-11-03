@@ -88,6 +88,14 @@
         "method": "POST",
         "path": "/api/v1/jiminy"
       }
+    },
+    {
+      "path": "/v1/fields/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/fields/:dataset"
+      }
     }
   ]
 }
