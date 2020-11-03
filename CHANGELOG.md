@@ -1,3 +1,7 @@
+## 03/11/2020
+
+- Implement catch-all route for `query`, `download` and `fields` endpoints.
+
 ## 22/06/2020
 
 - Parsing invalid queries on `/query` now returns a 400 HTTP error
