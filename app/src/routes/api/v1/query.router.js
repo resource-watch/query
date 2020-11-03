@@ -7,6 +7,7 @@ const Storage = require('@google-cloud/storage');
 const QueryService = require('services/query.service');
 const passThrough = require('stream').PassThrough;
 const Jiminy = require('jiminy');
+const DatasetMiddleware = require('middleware/dataset.middleware');
 const jiminyConfig = require('./jiminy.config');
 
 const router = new Router();
@@ -54,7 +55,8 @@ class QueryRouter {
                     await fs.unlink(`/tmp/${nameFile}`);
                 }
                 // eslint-disable-next-line no-empty
-            } catch (err) {}
+            } catch (err) {
+            }
         }
     }
 
@@ -92,6 +94,31 @@ class QueryRouter {
                 ctx.throw(500, 'Internal server error');
             }
         }
+    }
+
+    static async fields(ctx) {
+        logger.info('Fetching dataset fields');
+
+        const { dataset } = ctx.request.query;
+
+        logger.debug('isQuery - ctx.path', ctx.path);
+
+        const options = {
+            method: 'GET',
+            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/fields/${dataset.provider}/${dataset.id}`,
+            simple: false,
+            resolveWithFullResponse: true,
+            json: true
+        };
+
+        logger.debug('Doing fields request to adapter', options);
+
+        const req = request(options);
+        req.on('response', (response) => {
+            ctx.response.status = response.statusCode;
+            ctx.set(getHeadersFromResponse(response));
+        });
+        ctx.body = req.on('error', ctx.onerror).pipe(passThrough());
     }
 
     static async jiminy(ctx) {
@@ -136,6 +163,8 @@ class QueryRouter {
     }
 
 }
+
+router.get('/fields/:dataset', DatasetMiddleware.getDatasetById, QueryRouter.fields);
 
 router.post('/query', QueryRouter.query);
 router.post('/query/:dataset', QueryRouter.query);
