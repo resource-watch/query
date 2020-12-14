@@ -2,7 +2,7 @@ const logger = require('logger');
 
 const Sql2json = require('sql2json').sql2json;
 const Json2sql = require('sql2json').json2sql;
-const ctRegisterMicroservice = require('ct-register-microservice-node');
+const { RWAPIMicroservice } = require('rw-api-microservice-node');
 const JSONAPIDeserializer = require('jsonapi-serializer').Deserializer;
 const ValidationError = require('errors/validation.error');
 const QueryParsingError = require('errors/queryParsing.error');
@@ -156,7 +156,7 @@ class QueryService {
         let dataset = null;
         try {
             logger.debug('Obtaining dataset with id/slug', datasetId);
-            dataset = await ctRegisterMicroservice.requestToMicroservice({
+            dataset = await RWAPIMicroservice.requestToMicroservice({
                 uri: `/dataset/${datasetId}`,
                 json: true,
                 method: 'GET'
