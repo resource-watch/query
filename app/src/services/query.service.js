@@ -164,10 +164,11 @@ class QueryService {
             logger.debug('Dataset obtained correctly', dataset);
             dataset = await deserializer(dataset);
         } catch (err) {
-            logger.error('Error obtaining dataset', err);
             if (err.statusCode === 404) {
+                logger.debug('Dataset not found: ', err);
                 throw new ValidationError(404, 'Dataset not found');
             }
+            logger.error('Error obtaining dataset', err);
             throw new ValidationError(500, err.message);
         }
 
