@@ -14,4 +14,5 @@ services:
       CT_TOKEN: cttoken
       CT_REGISTER_MODE: auto
       MONGO_PORT_27017_TCP_ADDR: mongo
+      FASTLY_ENABLED: "false"
     command: test

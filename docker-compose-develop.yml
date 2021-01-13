@@ -13,6 +13,7 @@ services:
       GCLOUD_STORAGE: ${GCLOUD_STORAGE}
       GOOGLE_APPLICATION_CREDENTIALS: /opt/query/storage.json
       BUCKET_FREEZE: query-freeze
+      FASTLY_ENABLED: "false"
 
     command: develop
     volumes:
