@@ -5,6 +5,7 @@ services:
     ports:
       - "35749:35729"
     environment:
+      NODE_PATH: app/src
       CT_URL: http://mymachine:9000
       LOCAL_URL: http://mymachine:5000
       API_VERSION: v1
