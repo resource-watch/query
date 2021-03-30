@@ -33,8 +33,8 @@ describe('GET download', () => {
             });
 
         const response = await requester
-            .post(`/api/v1/download`)
-            .send({
+            .get(`/api/v1/download`)
+            .query({
                 sql: 'select 1 from data'
             });
 
@@ -44,7 +44,7 @@ describe('GET download', () => {
     });
 
     it('Calling the download endpoint with no sql parameter should return a 400 error message', async () => {
-        const response = await requester.post(`/api/v1/download`);
+        const response = await requester.get(`/api/v1/download`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -53,7 +53,7 @@ describe('GET download', () => {
 
     it('Calling the download endpoint with an empty sql parameter should return a 400 error message', async () => {
         const response = await requester
-            .post(`/api/v1/download?sql=`);
+            .get(`/api/v1/download?sql=`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -62,7 +62,7 @@ describe('GET download', () => {
 
     it('Calling the download endpoint with an invalid sql download should return a 400 error message', async () => {
         const response = await requester
-            .post(`/api/v1/download?sql=foo`);
+            .get(`/api/v1/download?sql=foo`);
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -96,15 +96,16 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/download/${provider}/${timestamp}`, {
+                .get(`/v1/download/${provider}/${timestamp}`)
+                .query({
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
 
             const response = await requester
-                .post(`/api/v1/download`)
-                .send({
+                .get(`/api/v1/download`)
+                .query({
                     sql: `select 1 from ${timestamp}`
                 });
 
@@ -142,15 +143,16 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/download/${provider}/${timestamp}`, {
+                .get(`/v1/download/${provider}/${timestamp}`)
+                .query({
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
 
             const response = await requester
-                .post(`/api/v1/download`)
-                .send({
+                .get(`/api/v1/download`)
+                .query({
                     sql: `select 1 from ${timestamp}`
                 });
 
@@ -188,15 +190,16 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/download/${provider}/${timestamp}`, {
+                .get(`/v1/download/${provider}/${timestamp}`)
+                .query({
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
 
             const response = await requester
-                .post(`/api/v1/download/${timestamp}`)
-                .send({
+                .get(`/api/v1/download/${timestamp}`)
+                .query({
                     sql: `select 1 from data`
                 });
 
@@ -234,15 +237,16 @@ describe('GET download', () => {
             };
 
             nock(process.env.CT_URL)
-                .post(`/v1/download/${provider}/${timestamp}`, {
+                .get(`/v1/download/${provider}/${timestamp}`)
+                .query({
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
 
             const response = await requester
-                .post(`/api/v1/download/${timestamp}`)
-                .send({
+                .get(`/api/v1/download/${timestamp}`)
+                .query({
                     sql: `select 1 from data`
                 });
 

@@ -166,9 +166,13 @@ class QueryRouter {
 
 router.get('/fields/:dataset', DatasetMiddleware.getDatasetById, QueryRouter.fields);
 
+router.get('/query', QueryRouter.query);
+router.get('/query/:dataset', QueryRouter.query);
 router.post('/query', QueryRouter.query);
 router.post('/query/:dataset', QueryRouter.query);
 
+router.get('/download', QueryRouter.query);
+router.get('/download/:dataset', QueryRouter.query);
 router.post('/download', QueryRouter.query);
 router.post('/download/:dataset', QueryRouter.query);
 
