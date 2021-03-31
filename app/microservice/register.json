@@ -10,7 +10,7 @@
       "method": "GET",
       "binary": true,
       "redirect": {
-        "method": "POST",
+        "method": "GET",
         "path": "/api/v1/query/:dataset"
       }
     },
