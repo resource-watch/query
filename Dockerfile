@@ -13,7 +13,7 @@ RUN yarn global add grunt-cli bunyan
 
 RUN mkdir -p /opt/$NAME
 COPY package.json /opt/$NAME/package.json
-RUN cd /opt/$NAME && yarn
+COPY yarn.lock /opt/$NAME/yarn.lock
 
 COPY entrypoint.sh /opt/$NAME/entrypoint.sh
 COPY config /opt/$NAME/config
