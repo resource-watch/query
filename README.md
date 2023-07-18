@@ -48,8 +48,7 @@ You can now access the microservice through the CT gateway.
 
 It is necessary to define these environment variables:
 
-* CT_URL => Control Tower URL
-* API_VERSION => Actual version of the API (v1)
+* GATEWAY_URL => Control Tower URL
 * NODE_ENV => Environment (prod, staging, dev)
 
 

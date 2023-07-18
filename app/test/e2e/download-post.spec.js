@@ -1,11 +1,11 @@
 const nock = require('nock');
 const chai = require('chai');
 const { getTestServer } = require('./utils/test-server');
-const { createMockGetDataset } = require('./utils/helpers');
+const { createMockGetDataset, mockValidateRequestWithApiKey } = require('./utils/helpers');
 
 chai.should();
 
-const requester = getTestServer();
+let requester;
 
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
@@ -17,11 +17,16 @@ describe('POST download', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        nock.cleanAll();
+        requester = await getTestServer();
     });
 
     it('Doing a basic download for a dataset that does not exist should return a 400', async () => {
-        nock(process.env.CT_URL)
+        mockValidateRequestWithApiKey({});
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/v1/dataset/data`)
             .reply(404, {
                 errors: [
@@ -34,6 +39,7 @@ describe('POST download', () => {
 
         const response = await requester
             .post(`/api/v1/download`)
+            .set('x-api-key', 'api-key-test')
             .send({
                 sql: 'select 1 from data'
             });
@@ -44,7 +50,10 @@ describe('POST download', () => {
     });
 
     it('Calling the download endpoint with no sql parameter should return a 400 error message', async () => {
-        const response = await requester.post(`/api/v1/download`);
+        mockValidateRequestWithApiKey({});
+        const response = await requester
+            .post(`/api/v1/download`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -52,8 +61,10 @@ describe('POST download', () => {
     });
 
     it('Calling the download endpoint with an empty sql parameter should return a 400 error message', async () => {
+        mockValidateRequestWithApiKey({});
         const response = await requester
-            .post(`/api/v1/download?sql=`);
+            .post(`/api/v1/download?sql=`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -61,8 +72,10 @@ describe('POST download', () => {
     });
 
     it('Calling the download endpoint with an invalid sql download should return a 400 error message', async () => {
+        mockValidateRequestWithApiKey({});
         const response = await requester
-            .post(`/api/v1/download?sql=foo`);
+            .post(`/api/v1/download?sql=foo`)
+            .set('x-api-key', 'api-key-test');
 
         response.status.should.equal(400);
         response.body.should.have.property('errors').and.be.an('array');
@@ -71,6 +84,7 @@ describe('POST download', () => {
 
     it('Doing a download request to a document dataset should forward the request to the corresponding endpoint (happy case - dataset id in request)', async () => {
         const testDocumentDataset = async (provider) => {
+            mockValidateRequestWithApiKey({});
             const timestamp = new Date().getTime();
 
             createMockGetDataset(timestamp, { connectorType: 'rest', provider });
@@ -95,15 +109,19 @@ describe('POST download', () => {
                 }
             };
 
-            nock(process.env.CT_URL)
+            nock(process.env.GATEWAY_URL, {
+                reqheaders: {
+                    'x-api-key': 'api-key-test',
+                }
+            })
                 .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
-
             const response = await requester
                 .post(`/api/v1/download`)
+                .set('x-api-key', 'api-key-test')
                 .send({
                     sql: `select 1 from ${timestamp}`
                 });
@@ -117,6 +135,7 @@ describe('POST download', () => {
 
     it('Doing a download request to a rest dataset should forward the request to the corresponding endpoint (happy case - dataset id in request)', async () => {
         const testDocumentDataset = async (provider) => {
+            mockValidateRequestWithApiKey({});
             const timestamp = new Date().getTime();
 
             createMockGetDataset(timestamp, { connectorType: 'document', provider });
@@ -141,15 +160,19 @@ describe('POST download', () => {
                 }
             };
 
-            nock(process.env.CT_URL)
+            nock(process.env.GATEWAY_URL, {
+                reqheaders: {
+                    'x-api-key': 'api-key-test',
+                }
+            })
                 .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
-
             const response = await requester
                 .post(`/api/v1/download`)
+                .set('x-api-key', 'api-key-test')
                 .send({
                     sql: `select 1 from ${timestamp}`
                 });
@@ -163,6 +186,7 @@ describe('POST download', () => {
 
     it('Doing a download request to a document dataset should forward the request to the corresponding endpoint (happy case - dataset id in query)', async () => {
         const testDocumentDataset = async (provider) => {
+            mockValidateRequestWithApiKey({});
             const timestamp = new Date().getTime();
 
             createMockGetDataset(timestamp, { connectorType: 'rest', provider });
@@ -187,15 +211,19 @@ describe('POST download', () => {
                 }
             };
 
-            nock(process.env.CT_URL)
+            nock(process.env.GATEWAY_URL, {
+                reqheaders: {
+                    'x-api-key': 'api-key-test',
+                }
+            })
                 .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
-
             const response = await requester
                 .post(`/api/v1/download/${timestamp}`)
+                .set('x-api-key', 'api-key-test')
                 .send({
                     sql: `select 1 from data`
                 });
@@ -209,6 +237,7 @@ describe('POST download', () => {
 
     it('Doing a download request to a rest dataset should forward the request to the corresponding endpoint (happy case - dataset id in query)', async () => {
         const testDocumentDataset = async (provider) => {
+            mockValidateRequestWithApiKey({});
             const timestamp = new Date().getTime();
 
             createMockGetDataset(timestamp, { connectorType: 'document', provider });
@@ -233,15 +262,19 @@ describe('POST download', () => {
                 }
             };
 
-            nock(process.env.CT_URL)
+            nock(process.env.GATEWAY_URL, {
+                reqheaders: {
+                    'x-api-key': 'api-key-test',
+                }
+            })
                 .post(`/v1/download/${provider}/${timestamp}`, {
                     sql: 'SELECT 1 FROM index_d1ced4227cd5480a8904d3410d75bf42_1587619728489'
                 })
                 .reply(200, reply);
 
-
             const response = await requester
                 .post(`/api/v1/download/${timestamp}`)
+                .set('x-api-key', 'api-key-test')
                 .send({
                     sql: `select 1 from data`
                 });

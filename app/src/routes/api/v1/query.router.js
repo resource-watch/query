@@ -105,10 +105,13 @@ class QueryRouter {
 
         const options = {
             method: 'GET',
-            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/fields/${dataset.provider}/${dataset.id}`,
+            uri: `${process.env.GATEWAY_URL}/v1/fields/${dataset.provider}/${dataset.id}`,
             simple: false,
             resolveWithFullResponse: true,
-            json: true
+            json: true,
+            headers: {
+                'x-api-key': ctx.request.headers['x-api-key']
+            }
         };
 
         logger.debug('Doing fields request to adapter', options);
@@ -178,6 +181,5 @@ router.post('/download/:dataset', QueryRouter.query);
 
 router.get('/jiminy', QueryRouter.jiminy);
 router.post('/jiminy', QueryRouter.jiminy);
-
 
 module.exports = router;
