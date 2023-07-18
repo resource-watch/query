@@ -26,9 +26,6 @@ Dependencies on other Microservices:
 
 ### OS X
 
-**First, make sure that you have the [API gateway running
-locally](https://github.com/control-tower/control-tower).**
-
 We're using Docker which, luckily for you, means that getting the
 application running locally should be fairly painless. First, make sure
 that you have [Docker Compose](https://docs.docker.com/compose/install/)
