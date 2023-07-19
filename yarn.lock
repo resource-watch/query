@@ -5107,10 +5107,10 @@ run-parallel@^1.1.9:
   resolved "https://registry.yarnpkg.com/run-parallel/-/run-parallel-1.1.9.tgz#c9dd3a7cf9f4b2c4b6244e173a6ed866e61dd679"
   integrity sha512-DEqnSRTDw/Tc3FXf49zedI638Z9onwUotBMiUFKmrO2sdFKIbXamXGQ3Axd4qgphxKB4kw/qP1w5kTxnfU1B9Q==
 
-rw-api-microservice-node@5.0.0-rc.5:
-  version "5.0.0-rc.5"
-  resolved "https://registry.yarnpkg.com/rw-api-microservice-node/-/rw-api-microservice-node-5.0.0-rc.5.tgz#e1eb2eddab34472de9ab638fba9127b5d476631b"
-  integrity sha512-P9F+Q31CMynFTylkKam4y7YpdOCz2096z0M+PNCkCZ2l22wUNfVdaPhODmyHG7KhAGhChRNbywGDhJFRrbmVeg==
+rw-api-microservice-node@5.0.0-rc.6:
+  version "5.0.0-rc.6"
+  resolved "https://registry.yarnpkg.com/rw-api-microservice-node/-/rw-api-microservice-node-5.0.0-rc.6.tgz#c2659d2db95e0b0066e8ff42516215be770bab47"
+  integrity sha512-ULN8J1Wmeo2+mptJF95lEu+cR9E549u/26kGEViK8+s2mAyfcI0in/Z6LA9HAPgCSb9jtSGZg3ExgX6Ob9tLYg==
   dependencies:
     "@koa/cors" "^3.4.3"
     "@tiagojsag/fastly-promises" "^1.0.1"

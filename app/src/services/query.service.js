@@ -191,7 +191,6 @@ class QueryService {
                 qs = { ...ctx.query };
                 delete qs.sql;
                 body = { ...ctx.request.body, sql: newSql };
-                delete body.requestApplication;
             }
         } else {
             const newTableName = dataset.tableName;
@@ -200,7 +199,6 @@ class QueryService {
             } else {
                 qs = { ...ctx.query };
                 body = { ...ctx.request.body, tableName: newTableName };
-                delete body.requestApplication;
             }
         }
         logger.debug('isQuery - ctx.path', ctx.path);
@@ -215,7 +213,6 @@ class QueryService {
         };
 
         delete qs.loggedUser;
-        delete qs.requestApplication;
         options.qs = qs;
         if (ctx.method === 'GET') {
             options.method = 'GET';

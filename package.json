@@ -62,7 +62,7 @@
     "koa-simple-healthcheck": "^0.0.1",
     "request": "2.88.0",
     "request-promise": "4.2.2",
-    "rw-api-microservice-node": "5.0.0-rc.5",
+    "rw-api-microservice-node": "5.0.0-rc.6",
     "sql2json": "2.0.6"
   },
   "lint-staged": {
