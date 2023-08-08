@@ -1,12 +1,6 @@
 #!/bin/bash
 
 case "$1" in
-    test-e2e)
-        yarn run test-e2e
-        ;;
-    test-unit)
-        yarn run test-unit
-        ;;
     start)
         yarn start
         ;;
