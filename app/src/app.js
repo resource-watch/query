@@ -45,8 +45,8 @@ app.use(async (ctx, next) => {
 
 });
 
-app.use(koaLogger());
 app.use(koaSimpleHealthCheck());
+app.use(koaLogger());
 
 app.use(RWAPIMicroservice.bootstrap({
     logger,
@@ -68,7 +68,5 @@ const port = process.env.PORT || '3000';
 const server = app.listen(port, () => {
     logger.info('Server started in ', port);
 });
-
-logger.info('Server started in ', process.env.PORT);
 
 module.exports = server;
