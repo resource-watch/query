@@ -26,9 +26,6 @@ Dependencies on other Microservices:
 
 ### OS X
 
-**First, make sure that you have the [API gateway running
-locally](https://github.com/control-tower/control-tower).**
-
 We're using Docker which, luckily for you, means that getting the
 application running locally should be fairly painless. First, make sure
 that you have [Docker Compose](https://docs.docker.com/compose/install/)
@@ -48,8 +45,7 @@ You can now access the microservice through the CT gateway.
 
 It is necessary to define these environment variables:
 
-* CT_URL => Control Tower URL
-* API_VERSION => Actual version of the API (v1)
+* GATEWAY_URL => Control Tower URL
 * NODE_ENV => Environment (prod, staging, dev)
 
 
