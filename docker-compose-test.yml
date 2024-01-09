@@ -8,11 +8,12 @@ services:
     environment:
       NODE_ENV: test
       PORT: 5000
-      CT_URL: http://mymachine:9000
+      GATEWAY_URL: http://mymachine:9000
       LOCAL_URL: http://query.default.svc.cluster.local:5000
-      API_VERSION: v1
-      CT_TOKEN: cttoken
-      CT_REGISTER_MODE: auto
+      MICROSERVICE_TOKEN: cttoken
       MONGO_PORT_27017_TCP_ADDR: mongo
       FASTLY_ENABLED: "false"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
     command: test

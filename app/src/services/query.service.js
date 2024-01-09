@@ -34,7 +34,6 @@ const containApps = (apps1, apps2) => {
     return false;
 };
 
-
 const checkUserHasPermission = (user, dataset) => {
     if (user && dataset) {
         // check if user is admin of any application of the dataset or manager and owner of the dataset
@@ -47,7 +46,6 @@ const checkUserHasPermission = (user, dataset) => {
     }
     return false;
 };
-
 
 const generateTemplateString = (function () {
     const cache = {};
@@ -130,7 +128,7 @@ class QueryService {
                 }
             }
         }
-        const uri = `${process.env.CT_URL}/${process.env.API_VERSION}${generateTemplateString(endpointConfig.uri)(path)}`;
+        const uri = `${process.env.GATEWAY_URL}/v1${generateTemplateString(endpointConfig.uri)(path)}`;
         return {
             uri,
             method: endpointConfig.method,
@@ -157,9 +155,12 @@ class QueryService {
         try {
             logger.debug('Obtaining dataset with id/slug', datasetId);
             dataset = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/dataset/${datasetId}`,
+                uri: `/v1/dataset/${datasetId}`,
                 json: true,
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'x-api-key': ctx.request.headers['x-api-key'],
+                }
             });
             logger.debug('Dataset obtained correctly', dataset);
             dataset = await deserializer(dataset);
@@ -202,10 +203,13 @@ class QueryService {
         }
         logger.debug('isQuery - ctx.path', ctx.path);
         const options = {
-            uri: `${process.env.CT_URL}/${process.env.API_VERSION}/${endpoint}/${dataset.provider}/${dataset.id}`,
+            uri: `${process.env.GATEWAY_URL}/v1/${endpoint}/${dataset.provider}/${dataset.id}`,
             simple: false,
             resolveWithFullResponse: true,
-            json: true
+            json: true,
+            headers: {
+                'x-api-key': ctx.request.headers['x-api-key'],
+            }
         };
 
         delete qs.loggedUser;
@@ -219,7 +223,6 @@ class QueryService {
         }
         return options;
     }
-
 
     static async getTargetQuery(ctx, endpoint) {
         logger.debug('Obtaining target query');

@@ -5,15 +5,16 @@ services:
     ports:
       - "35749:35729"
     environment:
-      CT_URL: http://mymachine:9000
+      GATEWAY_URL: http://mymachine:9000
       LOCAL_URL: http://mymachine:5000
-      API_VERSION: v1
-      CT_TOKEN: null
-      CT_REGISTER_MODE: auto
+      MICROSERVICE_TOKEN: null
       GCLOUD_STORAGE: ${GCLOUD_STORAGE}
       GOOGLE_APPLICATION_CREDENTIALS: /opt/query/storage.json
       BUCKET_FREEZE: query-freeze
       FASTLY_ENABLED: "false"
+      AWS_REGION: "us-east-1"
+      AWS_ACCESS_KEY_ID: "test"
+      AWS_SECRET_ACCESS_KEY: "test"
 
     command: develop
     volumes:

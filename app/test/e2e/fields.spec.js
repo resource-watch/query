@@ -1,11 +1,11 @@
 const nock = require('nock');
 const chai = require('chai');
 const { getTestServer } = require('./utils/test-server');
-const { createMockGetDataset } = require('./utils/helpers');
+const { createMockGetDataset, mockValidateRequestWithApiKey } = require('./utils/helpers');
 
 chai.should();
 
-const requester = getTestServer();
+let requester;
 
 nock.disableNetConnect();
 nock.enableNetConnect(process.env.HOST_IP);
@@ -17,11 +17,16 @@ describe('GET fields', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        nock.cleanAll();
+        requester = await getTestServer();
     });
 
     it('Doing a fields request for a dataset that does not exist should return a 400', async () => {
-        nock(process.env.CT_URL)
+        mockValidateRequestWithApiKey({});
+        nock(process.env.GATEWAY_URL, {
+            reqheaders: {
+                'x-api-key': 'api-key-test',
+            }
+        })
             .get(`/v1/dataset/data`)
             .reply(404, {
                 errors: [
@@ -34,6 +39,7 @@ describe('GET fields', () => {
 
         const response = await requester
             .post(`/api/v1/query`)
+            .set('x-api-key', 'api-key-test')
             .send({
                 sql: 'select 1 from data'
             });
@@ -45,6 +51,7 @@ describe('GET fields', () => {
 
     it('Doing a fields request to a dataset should forward the request to the corresponding endpoint (happy case - dataset id in request)', async () => {
         const testDocumentDataset = async (provider) => {
+            mockValidateRequestWithApiKey({});
             const timestamp = new Date().getTime();
 
             createMockGetDataset(timestamp, { connectorType: 'rest', provider });
@@ -91,13 +98,17 @@ describe('GET fields', () => {
                 }
             };
 
-            nock(process.env.CT_URL)
+            nock(process.env.GATEWAY_URL, {
+                reqheaders: {
+                    'x-api-key': 'api-key-test',
+                }
+            })
                 .get(`/v1/fields/${provider}/${timestamp}`)
                 .reply(200, reply);
 
-
             const response = await requester
-                .get(`/api/v1/fields/${timestamp}`);
+                .get(`/api/v1/fields/${timestamp}`)
+                .set('x-api-key', 'api-key-test');
 
             response.status.should.equal(200);
             response.body.should.deep.equal(reply);

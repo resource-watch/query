@@ -15,9 +15,7 @@ const koaBody = require('koa-body')({
     textLimit: '50mb'
 });
 
-
 const app = new Koa();
-
 
 app.use(convert(koaBody));
 
@@ -47,37 +45,28 @@ app.use(async (ctx, next) => {
 
 });
 
-app.use(koaLogger());
 app.use(koaSimpleHealthCheck());
+app.use(koaLogger());
 
 app.use(RWAPIMicroservice.bootstrap({
-    name: config.get('service.name'),
-    info: require('../microservice/register.json'),
-    swagger: require('../microservice/public-swagger.json'),
     logger,
-    baseURL: process.env.CT_URL,
-    url: process.env.LOCAL_URL,
-    token: process.env.CT_TOKEN,
+    gatewayURL: process.env.GATEWAY_URL,
+    microserviceToken: process.env.MICROSERVICE_TOKEN,
     fastlyEnabled: process.env.FASTLY_ENABLED,
     fastlyServiceId: process.env.FASTLY_SERVICEID,
-    fastlyAPIKey: process.env.FASTLY_APIKEY
+    fastlyAPIKey: process.env.FASTLY_APIKEY,
+    requireAPIKey: process.env.REQUIRE_API_KEY || true,
+    awsRegion: process.env.AWS_REGION,
+    awsCloudWatchLogStreamName: config.get('service.name'),
+    awsCloudWatchLoggingEnabled: process.env.AWS_CLOUD_WATCH_LOGGING_ENABLED || true,
 }));
 
 loader.loadRoutes(app);
 
+const port = process.env.PORT || '3000';
 
-const server = app.listen(process.env.PORT, () => {
-    if (process.env.CT_REGISTER_MODE === 'auto') {
-        RWAPIMicroservice.register().then(() => {
-            logger.info('CT registration process started');
-        }, (error) => {
-            logger.error(error);
-            process.exit(1);
-        });
-    }
+const server = app.listen(port, () => {
+    logger.info('Server started in ', port);
 });
-
-logger.info('Server started in ', process.env.PORT);
-
 
 module.exports = server;
