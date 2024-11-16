@@ -209,6 +209,7 @@ class QueryService {
             json: true,
             headers: {
                 'x-api-key': ctx.request.headers['x-api-key'],
+                origin: ctx.request.header.origin
             }
         };
 
